@@ -1,0 +1,88 @@
+PKGDIR ?= ..
+L4DIR ?= $(PKGDIR)/../..
+
+OSDEP:= SOTER
+PC_FILENAME   = libmatrix_s 
+TARGET        = libmatrix_s.a libmatrix_s.so
+SRC_C		  = core/corelib.c \
+				core/memset_s.c \
+				core/$(OSDEP)/osdep.c \
+				crypto/prng/prng.c \
+				crypto/prng/yarrow.c \
+				crypto/symmetric/aes.c \
+				crypto/symmetric/sm4.c \
+				crypto/symmetric/des3.c \
+				crypto/symmetric/seed.c \
+				crypto/symmetric/arc4.c \
+				crypto/symmetric/rc2.c \
+				crypto/symmetric/idea.c \
+				crypto/symmetric/modes/ecb.c \
+				crypto/symmetric/modes/cbc.c \
+				crypto/symmetric/modes/ccm.c \
+				crypto/symmetric/modes/ctr.c \
+				crypto/symmetric/modes/cts.c \
+				crypto/symmetric/modes/gcm.c \
+				crypto/symmetric/modes/xts.c \
+				crypto/digest/sha1.c \
+				crypto/digest/sha256.c \
+				crypto/digest/sha224.c \
+				crypto/digest/sha384.c \
+				crypto/digest/sha512.c \
+				crypto/digest/sm3.c \
+				crypto/digest/md5.c \
+				crypto/digest/md4.c \
+				crypto/digest/md2.c \
+				crypto/digest/cmac.c \
+				crypto/digest/hmac.c \
+				crypto/math/pstm.c \
+				crypto/math/pstm_montgomery_reduce.c \
+				crypto/math/pstm_sqr_comba.c \
+				crypto/math/pstm_mul_comba.c \
+				crypto/pubkey/pubkey.c \
+				crypto/pubkey/rsa.c \
+				crypto/pubkey/ecc.c \
+				crypto/pubkey/dh.c \
+				crypto/pubkey/dsa.c \
+				crypto/pubkey/pkcs.c \
+				crypto/keyformat/asn1.c \
+				crypto/keyformat/base64.c \
+				crypto/keyformat/x509.c \
+				crypto/interface/gpd.c \
+				crypto/ut_pf_cp.c 
+				
+#				crypto/digest/cbcmac.c 
+#======add mbedtls
+srcset  = aes aestab arc4 asn1parse   asn1write   base64  \
+                bignum        blowfish      camellia      \
+                ccm           cipher        cipher_wrap   \
+                ctr_drbg      des           dhm           \
+                ecdh          ecdsa         ecjpake       \
+                ecp                                           \
+                ecp_curves    entropy       entropy_poll  \
+                error         gcm           havege        \
+                hmac_drbg     md            md2           \
+                md4           md5           md_wrap       \
+                memory_buffer_alloc           oid           \
+                padlock       pem           pk            \
+                pk_wrap       pkcs12        pkcs5         \
+                pkparse       pkwrite       platform      \
+                ripemd160     rsa           sha1          \
+                sha256        sha512        threading     \
+                timing        version                       \
+                version_features              xtea      \
+                certs         pkcs11        x509          \
+                x509_create   x509_crl      x509_crt      \
+                x509_csr      x509write_crt x509write_csr
+
+srcset1 := $(addprefix ../mbedtls-2.3.0/library/, $(srcset) )
+SRC_C := $(addsuffix .c, $(srcset1) ) $(SRC_C)
+
+#CRT2           := $(shell  rm -rf mbedtls-2.3.0 && tar zxvf libs/mbedtls-2.3.0-apache.tgz &&  patch -p0 <libs/bean.patch  )
+#==========add mbedtls
+
+
+
+PRIVATE_INCDIR	 = $(SRC_DIR) $(SRC_DIR)/../mbedtls-2.3.0/include
+REQUIRES_LIBS  = libuTsys_base libutcrypto lib_tvm_time
+CFLAGS += -DHARDWARE_RND
+include $(L4DIR)/mk/lib.mk
